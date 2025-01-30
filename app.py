@@ -3,7 +3,9 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)  # Enable Cross-Origin Resource Sharing
+
+# Allow only your GitHub Pages frontend to access this API
+CORS(app, resources={r"/*": {"origins": "https://bjuddley.github.io"}})
 
 def calculate_benefit(fra, benefit, retirement_age):
     """
