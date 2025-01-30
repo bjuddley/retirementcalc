@@ -5,7 +5,7 @@ from flask_cors import CORS
 app = Flask(__name__)
 
 # Allow only your GitHub Pages frontend to access this API
-CORS(app, resources={r"/*": {"origins": "https://bjuddley.github.io"}})
+CORS(app, resources={r"/calculate": {"origins": "https://bjuddley.github.io"}})
 
 def calculate_benefit(fra, benefit, retirement_age):
     """
@@ -20,7 +20,8 @@ def calculate_benefit(fra, benefit, retirement_age):
         increase = (retirement_age - fra) * 0.08  # 8% increase per year
         final_benefit = round(benefit * (1 + increase), 2)
 
-    return final_benefit
+    # Ensure the benefit is never negative
+    return max(final_benefit, 0)
 
 @app.route('/calculate', methods=['POST'])
 def calculate():
