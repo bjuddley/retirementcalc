@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimal Retirement Age Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f4f4f9;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #333;
+        }
+
+        main {
+            width: 90%;
+            max-width: 600px;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        fieldset {
+            border: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+        }
+
+        legend {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #graph-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        canvas {
+            max-width: 100%;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            main {
+                padding: 15px;
+            }
+
+            button {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Optimal Retirement Age Calculator</h1>
+    </header>
+    <main>
+        <form id="retirement-form">
+            <fieldset>
+                <legend>Basic Information</legend>
+                <label for="birth-date">Birth Date:</label>
+                <input type="date" id="birth-date" required>
+
+                <label for="fra">Full Retirement Age:</label>
+                <input type="number" id="fra" required>
+                
+                <label for="benefit">Estimated Social Security Benefit:</label>
+                <input type="number" id="benefit" required>
+            </fieldset>
+
+            <fieldset>
+                <legend>Retirement Details</legend>
+                <label for="retirement-date">Planned Retirement Date:</label>
+                <input type="date" id="retirement-date" required>
+                
+                <label for="income-2024">Estimated Taxable Income in 2024:</label>
+                <input type="number" id="income-2024" required>
+
+                <label for="post-retirement-income">Expected Taxable Income After Retirement:</label>
+                <input type="number" id="post-retirement-income" required>
+            </fieldset>
+
+            <fieldset>
+                <legend>Life Expectancy</legend>
+                <label for="life-expectancy">Estimated Life Expectancy:</label>
+                <input type="number" id="life-expectancy" required>
+            </fieldset>
+
+            <fieldset>
+                <legend>Marital Information</legend>
+                <label for="marital-status">Are you married?</label>
+                <select id="marital-status" required>
+                    <option value="single">Single</option>
+                    <option value="married">Married</option>
+                    <option value="divorced">Divorced</option>
+                </select>
+
+                <div id="spouse-info" style="display: none;">
+                    <label for="spouse-benefit">Do you know your spouse's benefit?</label>
+                    <select id="spouse-benefit">
+                        <option value="no">No</option>
+                        <option value="yes">Yes</option>
+                    </select>
+
+                    <div id="spouse-benefit-amount" style="display: none;">
+                        <label for="spouse-benefit-amount">Spouse's Benefit Amount:</label>
+                        <input type="number" id="spouse-benefit-amount-input">
+                    </div>
+                </div>
+            </fieldset>
+
+            <button type="button" id="calculate-button">Calculate</button>
+        </form>
+
+        <div id="graph-container">
+            <canvas id="retirement-chart"></canvas>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById('marital-status').addEventListener('change', function() {
+            const spouseInfo = document.getElementById('spouse-info');
+            if (this.value === 'married') {
+                spouseInfo.style.display = 'block';
+            } else {
+                spouseInfo.style.display = 'none';
+            }
+        });
+
+        document.getElementById('spouse-benefit').addEventListener('change', function() {
+            const spouseBenefitAmount = document.getElementById('spouse-benefit-amount');
+            if (this.value === 'yes') {
+                spouseBenefitAmount.style.display = 'block';
+            } else {
+                spouseBenefitAmount.style.display = 'none';
+            }
+        });
+
+        document.getElementById('calculate-button').addEventListener('click', async function () {
+    const birthDate = document.getElementById('birth-date').value;
+    const fra = document.getElementById('fra').value;
+    const benefit = document.getElementById('benefit').value;
+    const retirementDate = document.getElementById('retirement-date').value;
+    const lifeExpectancy = document.getElementById('life-expectancy').value;
+    
+    // Calculate the custom retirement age
+    const customRetirementAge = new Date(retirementDate).getFullYear() - new Date(birthDate).getFullYear();
+
+    const requestData = {
+        birth_date: birthDate,
+        fra: fra,
+        benefit: benefit,
+        retirement_date: retirementDate,
+        life_expectancy: lifeExpectancy,
+        retirement_age: customRetirementAge
+    };
+
+    console.log("Sending request data:", requestData);
+
+    try {
+        const response = await fetch('http://127.0.0.1:5000/calculate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(requestData)
+        });
+
+        const results = await response.json();
+        console.log("Received results:", results);
+
+        // Update Graph with New Calculations
+        const ctx = document.getElementById('retirement-chart').getContext('2d');
+        const data = {
+            labels: ['Earliest Retirement (62)', 'Full Retirement Age', 'Age 70', 'Custom Age'],
+            datasets: [{
+                label: 'Estimated Monthly Benefit ($)',
+                data: [results.earliest, results.fra, results.age_70, results.custom],
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 2
+            }]
+        };
+
+        new Chart(ctx, {
+            type: 'line',
+            data: data,
+            options: { responsive: true }
+        });
+
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+});
+
+    </script>
+</body>
+</html>
