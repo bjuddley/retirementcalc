@@ -77,8 +77,27 @@
                 <label for="retirement-date">Planned Retirement Date:</label>
                 <input type="date" id="retirement-date" required>
                 
+                <label for="income-2024">Estimated Taxable Income in 2024:</label>
+                <input type="number" id="income-2024" required>
+
+                <label for="post-retirement-income">Expected Taxable Income After Retirement:</label>
+                <input type="number" id="post-retirement-income" required>
+            </fieldset>
+
+            <fieldset>
+                <legend>Life Expectancy</legend>
                 <label for="life-expectancy">Estimated Life Expectancy:</label>
                 <input type="number" id="life-expectancy" required>
+            </fieldset>
+
+            <fieldset>
+                <legend>Marital Information</legend>
+                <label for="marital-status">Are you married?</label>
+                <select id="marital-status" required>
+                    <option value="single">Single</option>
+                    <option value="married">Married</option>
+                    <option value="divorced">Divorced</option>
+                </select>
             </fieldset>
 
             <button type="button" id="calculate-button">Calculate</button>
@@ -95,7 +114,10 @@
             const fra = document.getElementById('fra').value;
             const benefit = document.getElementById('benefit').value;
             const retirementDate = document.getElementById('retirement-date').value;
+            const income2024 = document.getElementById('income-2024').value;
+            const postRetirementIncome = document.getElementById('post-retirement-income').value;
             const lifeExpectancy = document.getElementById('life-expectancy').value;
+            const maritalStatus = document.getElementById('marital-status').value;
             
             const customRetirementAge = new Date(retirementDate).getFullYear() - new Date(birthDate).getFullYear();
             
@@ -104,7 +126,10 @@
                 fra: fra,
                 benefit: benefit,
                 retirement_date: retirementDate,
+                income_2024: income2024,
+                post_retirement_income: postRetirementIncome,
                 life_expectancy: lifeExpectancy,
+                marital_status: maritalStatus,
                 retirement_age: customRetirementAge
             };
 
