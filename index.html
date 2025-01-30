@@ -215,7 +215,7 @@
     console.log("Sending request data:", requestData);
 
     try {
-        const response = await fetch('http://127.0.0.1:5000/calculate', {
+        const response = await fetch('https://retirementcalc.onrender.com/', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(requestData)
