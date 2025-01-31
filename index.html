@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: "Inter", sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
@@ -16,7 +16,8 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            background-color: #f4f4f9;
+            background-color: #f8f9fc;
+            color: #333;
         }
 
         header {
@@ -25,50 +26,55 @@
         }
 
         h1 {
-            font-size: 2rem;
-            color: #333;
+            font-size: 2.5rem;
+            color: #222;
+            font-weight: 600;
         }
 
         main {
             width: 90%;
             max-width: 600px;
             background: #ffffff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
         }
 
         form {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 20px;
         }
 
         fieldset {
-            border: 1px solid #ccc;
-            padding: 15px;
-            border-radius: 5px;
+            border: none;
+            padding: 15px 0;
+            border-radius: 8px;
+            background: #f0f2f5;
         }
 
         legend {
             font-weight: bold;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
         }
 
         label {
             display: block;
-            font-weight: bold;
+            font-weight: 500;
             margin-top: 10px;
+            font-size: 1rem;
         }
 
         input, select, button {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             font-size: 1rem;
             border: 1px solid #ccc;
-            border-radius: 5px;
+            border-radius: 6px;
             box-sizing: border-box;
             margin-top: 5px;
+            background: white;
         }
 
         button {
@@ -76,10 +82,12 @@
             color: white;
             border: none;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: bold;
-            padding: 12px;
+            padding: 14px;
             margin-top: 15px;
+            border-radius: 8px;
+            transition: 0.3s;
         }
 
         button:hover {
@@ -87,7 +95,7 @@
         }
 
         #graph-container {
-            margin-top: 20px;
+            margin-top: 25px;
             text-align: center;
         }
 
@@ -149,73 +157,5 @@
             <canvas id="retirement-chart"></canvas>
         </div>
     </main>
-    <script>
-        document.getElementById('calculate-button').addEventListener('click', async function () {
-            const birthDate = document.getElementById('birth-date').value;
-            const fra = document.getElementById('fra').value;
-            const benefit = document.getElementById('benefit').value;
-            const retirementDate = document.getElementById('retirement-date').value;
-            const income2024 = document.getElementById('income-2024').value;
-            const postRetirementIncome = document.getElementById('post-retirement-income').value;
-            const lifeExpectancy = document.getElementById('life-expectancy').value;
-            const maritalStatus = document.getElementById('marital-status').value;
-            
-            const customRetirementAge = new Date(retirementDate).getFullYear() - new Date(birthDate).getFullYear();
-            
-            const requestData = {
-                birth_date: birthDate,
-                fra: fra,
-                benefit: benefit,
-                retirement_date: retirementDate,
-                income_2024: income2024,
-                post_retirement_income: postRetirementIncome,
-                life_expectancy: lifeExpectancy,
-                marital_status: maritalStatus,
-                retirement_age: customRetirementAge
-            };
-
-            console.log("Sending request data:", requestData);
-
-            try {
-                const response = await fetch('https://retirementcalc.onrender.com/calculate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(requestData)
-                });
-
-                const results = await response.json();
-                console.log("Received results:", results);
-
-                const ctx = document.getElementById('retirement-chart').getContext('2d');
-                
-                if (window.myChart) {
-                    window.myChart.destroy();
-                }
-
-                window.myChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: ['Earliest Retirement (62)', 'Full Retirement Age', 'Age 70', 'Custom Age'],
-                        datasets: [{
-                            label: 'Estimated Monthly Benefit ($)',
-                            data: [results.earliest, results.fra, results.age_70, results.custom],
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            borderWidth: 2
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: {
-                                display: true
-                            }
-                        }
-                    }
-                });
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        });
-    </script>
 </body>
 </html>
