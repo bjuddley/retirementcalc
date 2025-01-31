@@ -4,103 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Optimal Retirement Age Calculator</title>
-    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Materialize CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
-            font-family: "Inter", sans-serif;
-            margin: 0;
-            padding: 0;
+            background-color: #f5f5f5;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            background-color: #f8f9fc;
-            color: #333;
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 20px;
+        .container {
+            max-width: 600px;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
         }
 
         h1 {
-            font-size: 2.5rem;
-            color: #222;
+            text-align: center;
+            font-size: 2rem;
+            color: #2c3e50;
             font-weight: 600;
         }
 
-        main {
-            width: 90%;
-            max-width: 600px;
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        fieldset {
-            border: none;
-            padding: 15px 0;
-            border-radius: 8px;
-            background: #f0f2f5;
-        }
-
-        legend {
-            font-weight: bold;
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-        }
-
-        label {
-            display: block;
-            font-weight: 500;
-            margin-top: 10px;
-            font-size: 1rem;
-        }
-
-        input, select, button {
+        .btn {
             width: 100%;
-            padding: 12px;
-            font-size: 1rem;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            box-sizing: border-box;
-            margin-top: 5px;
-            background: white;
-        }
-
-        button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-size: 1.1rem;
-            font-weight: bold;
-            padding: 14px;
             margin-top: 15px;
-            border-radius: 8px;
-            transition: 0.3s;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        #graph-container {
-            margin-top: 25px;
-            text-align: center;
-        }
-
-        canvas {
-            max-width: 100%;
         }
     </style>
 </head>
@@ -108,54 +44,67 @@
     <header>
         <h1>Optimal Retirement Age Calculator</h1>
     </header>
-    <main>
+    <div class="container">
         <form id="retirement-form">
-            <fieldset>
-                <legend>Basic Information</legend>
-                <label for="birth-date">Birth Date:</label>
+            <div class="input-field">
                 <input type="date" id="birth-date" required>
+                <label for="birth-date">Birth Date</label>
+            </div>
 
-                <label for="fra">Full Retirement Age:</label>
+            <div class="input-field">
                 <input type="number" id="fra" required>
-                
-                <label for="benefit">Estimated Social Security Benefit:</label>
+                <label for="fra">Full Retirement Age</label>
+            </div>
+
+            <div class="input-field">
                 <input type="number" id="benefit" required>
-            </fieldset>
+                <label for="benefit">Estimated Social Security Benefit</label>
+            </div>
 
-            <fieldset>
-                <legend>Retirement Details</legend>
-                <label for="retirement-date">Planned Retirement Date:</label>
+            <div class="input-field">
                 <input type="date" id="retirement-date" required>
-                
-                <label for="income-2024">Estimated Taxable Income in 2024:</label>
+                <label for="retirement-date">Planned Retirement Date</label>
+            </div>
+
+            <div class="input-field">
                 <input type="number" id="income-2024" required>
+                <label for="income-2024">Estimated Taxable Income in 2024</label>
+            </div>
 
-                <label for="post-retirement-income">Expected Taxable Income After Retirement:</label>
+            <div class="input-field">
                 <input type="number" id="post-retirement-income" required>
-            </fieldset>
+                <label for="post-retirement-income">Expected Taxable Income After Retirement</label>
+            </div>
 
-            <fieldset>
-                <legend>Life Expectancy</legend>
-                <label for="life-expectancy">Estimated Life Expectancy:</label>
+            <div class="input-field">
                 <input type="number" id="life-expectancy" required>
-            </fieldset>
+                <label for="life-expectancy">Estimated Life Expectancy</label>
+            </div>
 
-            <fieldset>
-                <legend>Marital Information</legend>
-                <label for="marital-status">Are you married?</label>
+            <div class="input-field">
                 <select id="marital-status" required>
+                    <option value="" disabled selected>Choose an option</option>
                     <option value="single">Single</option>
                     <option value="married">Married</option>
                     <option value="divorced">Divorced</option>
                 </select>
-            </fieldset>
+                <label for="marital-status">Are you married?</label>
+            </div>
 
-            <button type="button" id="calculate-button">Calculate</button>
+            <button type="button" id="calculate-button" class="btn waves-effect waves-light blue">Calculate</button>
         </form>
 
-        <div id="graph-container">
+        <div id="graph-container" class="center-align">
             <canvas id="retirement-chart"></canvas>
         </div>
-    </main>
+    </div>
+
+    <!-- Materialize JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            M.AutoInit();
+        });
+    </script>
 </body>
 </html>
